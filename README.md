@@ -15,8 +15,10 @@ nvidia-docker run --privileged -it \
 tyoung96/ros2-foxy-nvidia:1.1
 
 src 폴더 설치
-git clone 
+git clone https://github.com/pyc5714/hdl-localization-ROS2.git
 
 필수 패키지 설치
 sudo apt install ros-foxy-pcl-ros
 sudo apt-get install libpcap-dev
+
+ros2 launch hdl_localization hdl_localization_2.launch.py
