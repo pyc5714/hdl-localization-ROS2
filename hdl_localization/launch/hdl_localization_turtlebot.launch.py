@@ -13,23 +13,26 @@ from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 
 def generate_launch_description():
+
+    # Importtant, required arguments
+    points_topic = LaunchConfiguration('points_topic', default='/velodyne_points')
+    odom_child_frame_id = LaunchConfiguration('odom_child_frame_id', default='base_link') 
+    imu_topic = LaunchConfiguration('imu_topic', default='/imu')
+    globalmap_pcd = DeclareLaunchArgument('globalmap_pcd', default_value='/root/workspace/src/hdl_localization/data/turtlebot3.pcd', description='Path to the global map PCD file')
+
     # arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
-    points_topic = LaunchConfiguration('points_topic', default='/velodyne_points')
-    odom_child_frame_id = LaunchConfiguration('odom_child_frame_id', default='base_link') 
-   
     # optional arguments
     use_imu = LaunchConfiguration('use_imu', default='true')
     invert_imu_acc = LaunchConfiguration('invert_imu_acc', default='false')
     invert_imu_gyro = LaunchConfiguration('invert_imu_gyro', default='false')
     use_global_localization = LaunchConfiguration('use_global_localization', default='false')
-    imu_topic = LaunchConfiguration('imu_topic', default='/imu')
     enable_robot_odometry_prediction = LaunchConfiguration('enable_robot_odometry_prediction', default='false')
     robot_odom_frame_id = LaunchConfiguration('robot_odom_frame_id', default='odom')
     plot_estimation_errors = LaunchConfiguration('plot_estimation_errors', default='false')
 
-
+    # optional tf arguments
     lidar_tf = Node(
         name='lidar_tf',
         package='tf2_ros',
@@ -49,16 +52,13 @@ def generate_launch_description():
                 plugin='hdl_localization::GlobalmapServerNodelet',
                 name='GlobalmapServerNodelet',
                 parameters=[
-                    {'globalmap_pcd': '/root/workspace/src/hdl_localization/data/turtlebot3.pcd'},
+                    {'globalmap_pcd': LaunchConfiguration('globalmap_pcd')},
                     {'convert_utm_to_local': True},
                     {'downsample_resolution': 0.1}]),
             ComposableNode(
                 package='hdl_localization',
                 plugin='hdl_localization::HdlLocalizationNodelet',
                 name='HdlLocalizationNodelet',
-                # remapping
-                # 원래는 /velodyne_points, /gpsimu_driver/imu_data 토픽이 들어올 때 imu, lidar callback이 수행되는데,
-                # remapping을 통해서 points_topic, imu_topic이 들어올 때 callback이 수행되도록 함.
                 remappings=[('/velodyne_points', points_topic), ('/gpsimu_driver/imu_data', imu_topic)],
                 parameters=[
                     {'odom_child_frame_id': odom_child_frame_id},
@@ -87,8 +87,4 @@ def generate_launch_description():
         output='screen',   
     )
 
-
-    return LaunchDescription([launch_ros.actions.SetParameter(name='use_sim_time', value=True),lidar_tf, container])
-    
-
-
+    return LaunchDescription([globalmap_pcd, launch_ros.actions.SetParameter(name='use_sim_time', value=True), lidar_tf, container])    

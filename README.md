@@ -85,8 +85,56 @@ When we created our docker container, we utilized the `--volume` option, so the 
 
 **All you need is `.pcd` file, lidar topic and imu topic!**  
 
+See `hdl_localization_turtlebot.launch.py` and run the example bagfile to get a better understanding.  
+
+```
+points_topic = LaunchConfiguration('points_topic', default='/velodyne_points')         # velodyne topic name
+odom_child_frame_id = LaunchConfiguration('odom_child_frame_id', default='base_link')  # velodyne_points frame ID
+imu_topic = LaunchConfiguration('imu_topic', default='/imu')                           # optional, you should know noise parameter
+globalmap_pcd = DeclareLaunchArgument('globalmap_pcd', default_value='/root/workspace/src/hdl_localization/data/turtlebot3.pcd', description='Path to the global map PCD file')
+
+```
+
+### Build and Run it!
+
+Within Docker, we need 3 containers.  
+To access the same container, use the command below
+```
+docker exec -it hdl-localization-ros2 /bin/bash
+```  
+Within the connected container,
+```
+source /opt/ros/foxy/setup.bash
+```
 
 
+
+```
+root@taeyoung-cilab:~/workspace# 
+```
+
+All should stay on the above path.
+
+- **1st container** (For hdl localization package) 
+```
+colcon build
+``` 
+```
+source install/setup.bash
+```
+```
+ros2 launch hdl_localization hdl_localization_turtlebot.launch.py
+```
+
+- **2nd container** (For rviz) 
+```
+rviz2 -d src/hdl_localization/rviz/hdl_localization_ros2.rviz 
+```
+
+- **3rd container** (For sample bagfile)
+```
+ros2 bag play src/hdl_localization/sample-bag/subset/
+```
 
 
 
