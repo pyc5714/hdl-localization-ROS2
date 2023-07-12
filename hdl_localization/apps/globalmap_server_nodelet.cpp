@@ -115,26 +115,14 @@ private:
 
     pcl::PointCloud<PointT>::Ptr filtered(new pcl::PointCloud<PointT>());
     voxelgrid->filter(*filtered);
-////***************************start pyc modified***************************/
-    // cout << endl << *filtered << endl << endl;
-/***************************end pyc modified***************************////
+
     globalmap = filtered;
   }
 
   void pub_once_cb() {
-////***************************start pyc modified***************************/
-    cout << endl << "pub_once_cb" << endl << endl;
-/***************************end pyc modified***************************////
     // sensor_msgs::msg::PointCloud2 globalmap_msg;
     globalmap_msg = std::make_shared<sensor_msgs::msg::PointCloud2>();
     pcl::toROSMsg(*globalmap, *globalmap_msg);
-
-////***************************start pyc modified***************************/
-    // cout << endl << *globalmap << endl << endl;
-/***************************end pyc modified***************************////
-////***************************start pyc modified***************************/
-    // cout << endl << globalmap_msg << endl << endl;
-/***************************end pyc modified***************************////
 
     globalmap_pub->publish(*globalmap_msg);
     globalmap_pub_timer.reset();
@@ -143,8 +131,6 @@ private:
 private:
   // ROS
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr globalmap_pub;
-  // rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr globalmap_pub_2;
-
 
   sensor_msgs::msg::PointCloud2::SharedPtr globalmap_msg;
 

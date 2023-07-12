@@ -241,7 +241,7 @@ private:
     } else {
       
       std::lock_guard<std::mutex> lock(imu_data_mutex);
-      RCLCPP_INFO(get_logger(),"imu size is : %d ", imu_data.size());
+      // RCLCPP_INFO(get_logger(),"imu size is : %d ", imu_data.size());
       auto imu_iter = imu_data.begin();
       for (imu_iter; imu_iter != imu_data.end(); imu_iter++) {
         if (rclcpp::Time(stamp) < rclcpp::Time((*imu_iter)->header.stamp)) {
