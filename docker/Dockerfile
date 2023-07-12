@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y cmake libatlas-base-dev libeigen3-dev l
 RUN apt-get install -y ros-foxy-cv-bridge ros-foxy-pcl-conversions ros-foxy-xacro ros-foxy-robot-state-publisher \
     ros-foxy-image-transport ros-foxy-image-transport-plugins ros-foxy-pcl-ros libpcap-dev
 
-WORKDIR /root/catkin_ws
+WORKDIR /root/workspace
 
 # Load ROS environment at each run
 COPY ./ros_entrypoint.sh /
